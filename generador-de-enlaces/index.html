@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Generador de Enlaces - Rebkakk</title>
+  <style>
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#0b1220;color:#e6eef8;margin:0;padding:24px}
+    .card{background:#071427;padding:18px;border-radius:10px;max-width:900px;margin:auto}
+    input,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    .row{display:flex;gap:8px;margin-top:8px}
+    .btn{background:#4f46e5;border:0;color:white;padding:10px 14px;border-radius:8px;cursor:pointer}
+    .muted{color:#94a3b8;font-size:13px}
+    .result{margin-top:12px;padding:10px;background:rgba(255,255,255,0.02);border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Generador de Enlaces para Videos</h2>
+    <p class="muted">Pega la URL directa del video (pomf.lain.la) y tu link de anuncio (Adsterra). Se generará un enlace que reproducirá el video y mostrará un botón de tu canal al final.</p>
+
+    <label class="muted">URL del video (pomf.lain.la)</label>
+    <input id="videoUrl" placeholder="https://pomf.lain.la/xxx.mp4">
+
+    <label class="muted" style="margin-top:8px;display:block">URL del anuncio (Adsterra)</label>
+    <input id="adUrl" value="https://www.effectivegatecpm.com/jnjjzbdgs?key=fc6c08d2bef3dd9c24e32a67140ef037">
+
+    <label class="muted" style="margin-top:8px;display:block">Título (opcional)</label>
+    <input id="title" placeholder="Título del video (opcional)">
+
+    <div class="row">
+      <button id="genBtn" class="btn">Generar enlace</button>
+      <button id="copyBtn" class="btn" style="background:#0ea5a4">Copiar enlace</button>
+    </div>
+
+    <div class="result" id="resultArea" style="display:none">
+      <div class="muted">Enlace generado:</div>
+      <input id="resultInput" readonly>
+      <div style="margin-top:8px">
+        <a id="openLink" class="btn" style="background:#2563eb;display:inline-block;text-decoration:none;color:#fff">Abrir enlace</a>
+      </div>
+      <p class="muted" style="margin-top:8px">Este enlace apunta a <code>/watch.html</code> con parámetros. Puedes acortarlo si lo deseas.</p>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const genBtn = document.getElementById('genBtn');
+  const copyBtn = document.getElementById('copyBtn');
+  const videoUrlEl = document.getElementById('videoUrl');
+  const adUrlEl = document.getElementById('adUrl');
+  const titleEl = document.getElementById('title');
+  const resultArea = document.getElementById('resultArea');
+  const resultInput = document.getElementById('resultInput');
+  const openLink = document.getElementById('openLink');
+
+  function isValidUrl(u){ try{ new URL(u); return true }catch(e){ return false } }
+
+  genBtn.addEventListener('click', ()=>{
+    const v = videoUrlEl.value.trim();
+    const a = adUrlEl.value.trim();
+    const t = titleEl.value.trim();
+
+    if(!v || !isValidUrl(v)) { alert('Pega una URL válida del video.'); return; }
+    if(a && !isValidUrl(a)) { alert('La URL del anuncio no es válida.'); return; }
+
+    const base = location.origin + '/watch.html';
+    const params = new URLSearchParams();
+    params.set('v', v);
+    if(a) params.set('a', a);
+    if(t) params.set('t', t);
+
+    const final = base + '?' + params.toString();
+
+    resultArea.style.display='block';
+    resultInput.value = final;
+    openLink.href = final;
+    openLink.target='_blank';
+  });
+
+  copyBtn.addEventListener('click', ()=>{
+    if(!resultInput.value) { alert('Genera primero un enlace.'); return; }
+    navigator.clipboard.writeText(resultInput.value).then(()=>{ alert('Enlace copiado al portapapeles'); });
+  });
+})();
+</script>
+</body>
+</html>

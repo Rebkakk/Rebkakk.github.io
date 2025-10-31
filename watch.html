@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ver Video</title>
+  <style>
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:#0b1220;color:#e6eef8;margin:0;padding:24px;text-align:center}
+    video{width:100%;max-width:900px;border-radius:12px;outline:none;margin-top:12px}
+    .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;flex-direction:column;color:white}
+    .btn{background:#4f46e5;border:0;padding:10px 18px;border-radius:8px;color:white;cursor:pointer;text-decoration:none;margin:6px}
+  </style>
+</head>
+<body>
+  <h2 id="title">Reproduciendo video...</h2>
+  <video id="player" controls></video>
+
+  <div class="overlay" id="overlay">
+    <h3>Gracias por ver</h3>
+    <a id="adBtn" class="btn" target="_blank">Ver anuncio</a>
+    <a id="channelBtn" class="btn" href="#" target="_blank">(aquí debes de cambiar este texto por el enlace de tu canal)</a>
+  </div>
+
+<script>
+(function(){
+  const url = new URLSearchParams(window.location.search);
+  const videoSrc = url.get('v');
+  const adUrl = url.get('a');
+  const title = url.get('t');
+  const player = document.getElementById('player');
+  const overlay = document.getElementById('overlay');
+  const adBtn = document.getElementById('adBtn');
+  const titleEl = document.getElementById('title');
+
+  if(videoSrc){
+    player.src = videoSrc;
+  } else {
+    document.body.innerHTML = '<p>No se proporcionó ningún video válido.</p>';
+    return;
+  }
+
+  if(title) titleEl.textContent = title;
+  if(adUrl) adBtn.href = adUrl;
+
+  player.addEventListener('ended', ()=>{
+    overlay.style.display='flex';
+  });
+})();
+</script>
+</body>
+</html>
